@@ -1,9 +1,11 @@
 package com.netease.rpc.service.impl;
 
+import com.netease.rpc.config.annotation.NRpcService;
 import com.netease.rpc.service.MyServiceProviderInterface;
-import org.apache.dubbo.config.annotation.DubboService;
+//import org.apache.dubbo.config.annotation.DubboService;
 
-@DubboService
+//@DubboService
+@NRpcService
 public class MyServiceProviderInterfaceImpl implements MyServiceProviderInterface {
     @Override
     public String sayHi(String name,String words){

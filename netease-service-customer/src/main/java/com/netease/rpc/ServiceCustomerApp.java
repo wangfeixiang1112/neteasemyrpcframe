@@ -1,6 +1,7 @@
 package com.netease.rpc;
 
-import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
+//import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
+import com.netease.rpc.config.spring.annotation.EnableNRpc;
 import com.netease.rpc.service.MyServiceCustomerService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,8 +14,9 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @ComponentScan("com.netease.rpc")//Spring注解掃描
-@PropertySource("classpath:/dubbo.properties")
-@EnableDubbo(scanBasePackages = "com.netease.rpc")
+//@PropertySource("classpath:/dubbo.properties")
+@EnableNRpc
+//@EnableDubbo(scanBasePackages = "com.netease.rpc")
 public class ServiceCustomerApp
 {
     public static void main( String[] args ) throws Exception

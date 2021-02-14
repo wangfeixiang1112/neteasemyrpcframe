@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="netease-service-api" />
         <module name="netease-service-customer" />
-        <module name="netease-service-provider" />
         <module name="neteaseserviceapi" />
+        <module name="netease-service-api" />
         <module name="neteaseservicecustomer" />
+        <module name="netease-service-provider" />
+        <module name="netease-rpc-all" />
         <module name="neteaseserviceprovider" />
       </profile>
     </annotationProcessing>

@@ -1,13 +1,14 @@
 package com.netease.rpc.service.impl;
+import com.netease.rpc.config.annotation.NRpcReference;
 import  com.netease.rpc.service.MyServiceCustomerService;
 import com.netease.rpc.service.MyServiceProviderInterface;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MyServiceCustomerServiceImpl implements MyServiceCustomerService {
 
-    @DubboReference
+    //@DubboReference
+    @NRpcReference
     private MyServiceProviderInterface myServiceProviderInterface;
     @Override
     public String seeSomeBody(String name) {
