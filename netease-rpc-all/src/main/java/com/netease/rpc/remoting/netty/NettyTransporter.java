@@ -1,5 +1,6 @@
 package com.netease.rpc.remoting.netty;
 
+import com.netease.rpc.remoting.Handler;
 import com.netease.rpc.remoting.Server;
 import com.netease.rpc.remoting.Transporter;
 
@@ -10,9 +11,9 @@ import java.net.URI;
  */
 public class NettyTransporter implements Transporter {
     @Override
-    public Server start(URI uri) {
+    public Server start(URI uri, Handler handler) {
         NettyServer nettyServer = new NettyServer();
-        nettyServer.start(uri);
+        nettyServer.start(uri,handler);
         return nettyServer;
     }
 }

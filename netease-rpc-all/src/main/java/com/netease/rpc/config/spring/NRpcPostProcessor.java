@@ -29,11 +29,11 @@ public class NRpcPostProcessor implements ApplicationContextAware, Instantiation
             String name = protocolConfig.getName();
             String transporterName = protocolConfig.getTransporter();
             Transporter transporter = (Transporter) SpiUtils.getServiceImpl(transporterName, Transporter.class);
-            try {
+            /*try {
                 transporter.start(new URI("xxxx://127.0.0.1:8080/"));
             } catch (URISyntaxException e) {
                 e.printStackTrace();
-            }
+            }*/
             //Transporter
 
         }

@@ -11,5 +11,5 @@ public interface Transporter {
      * @param uri 服务器IP 端口
      * @return
      */
-    Server start(URI uri);
+    Server start(URI uri, Handler handler);
 }
