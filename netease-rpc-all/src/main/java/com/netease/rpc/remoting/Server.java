@@ -7,5 +7,5 @@ import java.net.URI;
  */
 public interface Server {
 
-    void start(URI uri,Handler handler);
+    void start(URI uri,Codec codec,Handler handler);
 }

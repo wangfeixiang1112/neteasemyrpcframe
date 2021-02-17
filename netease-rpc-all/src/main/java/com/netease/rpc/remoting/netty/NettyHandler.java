@@ -21,6 +21,7 @@ public class NettyHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("入栈事件 - 收到数据【接收网络请求/响应】"+msg);
         handler.onReceive(new NettyChannel(ctx.channel()), msg);
     }
 }

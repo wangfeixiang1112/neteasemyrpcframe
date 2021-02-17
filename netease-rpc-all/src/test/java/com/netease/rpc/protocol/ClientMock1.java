@@ -1,10 +1,16 @@
 package com.netease.rpc.protocol;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netease.rpc.common.serialize.Serialization;
+import com.netease.rpc.common.serialize.json.JsonSerialization;
 import com.netease.rpc.common.tools.SpiUtils;
+import com.netease.rpc.remoting.netty.NettyCodec;
+import com.netease.rpc.remoting.netty.NettyHandler;
 import com.netease.rpc.rpc.RpcInvocation;
+import com.netease.rpc.rpc.protocol.nrpc.codec.NrpcCodec;
 import com.netease.rpc.rpc.protocol.nrpc.codec.handler.NrpcHttpClientHandler;
 import com.netease.rpc.rpc.protocol.nrpc.codec.handler.NrpcHttpServerHandler;
+import com.netease.rpc.rpc.protocol.nrpc.codec.handler.NrpcServerHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -13,9 +19,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
+
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+//https://www.cnblogs.com/carl10086/p/6185095.html
 public class ClientMock1 {
 /*    public static void main(String[] args) throws Exception {
         // 1. 构建body
@@ -41,6 +49,10 @@ public class ClientMock1 {
     }*/
 
     public static void main(String[] args)throws Exception {
+        NrpcCodec codec = new NrpcCodec();
+        codec.setDecodeType(RpcInvocation.class);
+        codec.setSerialization(new JsonSerialization());
+        NrpcServerHandler nrpcServerHandler = new NrpcServerHandler();
         RpcInvocation rpcInvocation = new RpcInvocation();
         rpcInvocation.setServiceName("com.netease.rpc.service.MyServiceProviderInterface");
         rpcInvocation.setMethodName("sayHi");
@@ -48,11 +60,9 @@ public class ClientMock1 {
         rpcInvocation.setArguments(new Object[]{"岳不群", "你是个伪君子"});
         Serialization serialization =
                 (Serialization) SpiUtils.getServiceImpl("JsonSerialization", Serialization.class);
-        byte[] requestBody = serialization.serialize(rpcInvocation);
 
-        ByteBuf requestBuffer = Unpooled.buffer();
-        requestBuffer.writeBytes(requestBody);
-
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStr = objectMapper.writeValueAsString(rpcInvocation);
         final NrpcHttpClientHandler nrpcHttpClientHandler = new NrpcHttpClientHandler();
         EventLoopGroup group=new NioEventLoopGroup();
         Bootstrap client = new Bootstrap();
@@ -63,20 +73,22 @@ public class ClientMock1 {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast(new NettyCodec(codec.createInstance()),
+                                new NettyHandler(nrpcServerHandler));
                         //包含编码器和解码器:
                         // pipeline.addLast(new HttpClientCodec())等价于new HttpRequestEncoder()  + new HttpResponseDecoder()
                         //request编码
-                        pipeline.addLast(new HttpRequestEncoder())
+                       /* pipeline.addLast(new HttpRequestEncoder())
                                 //respon解码
                                 .addLast(new HttpResponseDecoder())
                                 .addLast(new HttpObjectAggregator(10240))
 
-                                .addLast(nrpcHttpClientHandler);
+                                .addLast(nrpcHttpClientHandler);*/
                     }
                 });
         try {
             ChannelFuture future = client.connect("localhost", 18080).sync();
-            future.channel().writeAndFlush(httpParams(requestBuffer)).sync();
+            future.channel().writeAndFlush(httpParams(jsonStr)).sync();
             future.channel().closeFuture().sync();
         }catch (Exception e){
             e.printStackTrace();
@@ -92,13 +104,28 @@ public class ClientMock1 {
      * @return
      * @throws URISyntaxException
      */
-    private static FullHttpRequest httpParams(ByteBuf requestBuffer) throws URISyntaxException {
+    private static DefaultFullHttpRequest httpParams(String content) throws URISyntaxException {
         //URI uri = new URI("?id=123");
         URI uri = new URI("");
-        FullHttpRequest request = new DefaultFullHttpRequest(
+       /* DefaultFullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1,
-                HttpMethod.GET,
-                uri.toASCIIString(),requestBuffer);
+                HttpMethod.POST,
+                uri.toASCIIString(),requestBuffer);*/
+
+        DefaultFullHttpRequest request = null;
+        try {
+            request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST,
+                    uri.toASCIIString(), Unpooled.wrappedBuffer(content.getBytes("UTF-8")));
+            request.headers().set(HttpHeaders.Names.HOST, "127.0.0.1");
+            request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+            request.headers().set(HttpHeaders.Names.CONTENT_LENGTH,
+                    request.content().readableBytes());
+            request.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
         return request;
     }
 }
