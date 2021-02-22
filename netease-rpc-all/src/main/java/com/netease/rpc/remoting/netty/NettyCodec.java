@@ -42,7 +42,7 @@ public class NettyCodec extends ChannelDuplexHandler {
     // 出栈
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        byte[] encode = codec.encode(msg);
-        super.write(ctx, Unpooled.wrappedBuffer(encode), promise);
+    /*    byte[] encode = codec.encode(msg);
+        super.write(ctx, Unpooled.wrappedBuffer(encode), promise);*/
     }
 }

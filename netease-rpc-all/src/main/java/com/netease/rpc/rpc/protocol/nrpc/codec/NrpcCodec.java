@@ -15,15 +15,16 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class NrpcCodec implements Codec {
     @Override
-    public byte[] encode(Object msg) throws Exception {
+    public String  encode(Object msg) throws Exception {
         System.out.println("编码:"+msg);
         if (msg instanceof DefaultFullHttpRequest){
             DefaultFullHttpRequest request = (DefaultFullHttpRequest)msg;
             ByteBuf jsonBuf = request.content();
             String jsonStr = jsonBuf.toString(CharsetUtil.UTF_8);
             System.out.println(jsonStr);
+            return jsonStr;
         }
-        return new byte[0];
+        return null;
     }
 
     @Override

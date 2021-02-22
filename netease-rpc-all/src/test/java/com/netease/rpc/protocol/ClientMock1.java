@@ -22,7 +22,7 @@ import io.netty.handler.codec.http.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URISyntaxException;//https://www.cnblogs.com/carl10086/p/6185095.html
 //https://www.cnblogs.com/carl10086/p/6185095.html
 public class ClientMock1 {
 /*    public static void main(String[] args) throws Exception {

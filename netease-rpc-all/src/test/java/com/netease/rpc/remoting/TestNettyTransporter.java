@@ -8,17 +8,17 @@ import java.net.URI;
 import java.util.List;
 
 public class TestNettyTransporter {
-    public static void main(String[] args) throws Exception{
-        new NettyTransporter().start(new URI("http://127.0.0.1:18080"), new Codec() {
+     /*  public static void main(String[] args) throws Exception{
+     new NettyTransporter().start(new URI("http://127.0.0.1:18080"), new Codec() {
             @Override
             public byte[] encode(Object msg) throws Exception {
                 return new byte[0];
             }
 
-           /* @Override
+           *//* @Override
             public List<Object> decode(byte[] message) throws Exception {
                 return null;
-            }*/
+            }*//*
 
             @Override
             public void decode(ChannelHandlerContext ctx, FullHttpRequest msg, List<Object> out) throws Exception {
@@ -40,5 +40,5 @@ public class TestNettyTransporter {
 
             }
         });
-    }
+    }*/
 }
